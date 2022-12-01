@@ -69,3 +69,34 @@ FROM book INNER JOIN author
 ON book.author_id = author.author_id
 GROUP BY name_author
 HAVING COUNT(DISTINCT(genre_id))=1;
+
+Задание 7:
+Вывести информацию о книгах (название книги, фамилию и инициалы автора, название жанра, цену и количество экземпляров книги), написанных в самых популярных жанрах,
+в отсортированном в алфавитном порядке по названию книг виде. Самым популярным считать жанр, общее количество экземпляров книг которого на складе максимально.
+
+Решение:
+SELECT title, name_author, name_genre, price, amount
+FROM book
+    INNER JOIN author ON book.author_id = author.author_id
+    INNER JOIN genre ON book.genre_id = genre.genre_id
+    INNER JOIN   (SELECT genre_id, sum(amount) AS sum_amount
+                              FROM book
+                              GROUP BY genre_id
+                              HAVING sum_amount = (SELECT sum(amount) AS sum_amount
+                                                                           FROM book
+                                                                           GROUP BY genre_id
+                                                                           ORDER BY sum_amount DESC
+                                                                           LIMIT 1)) AS temp ON book.genre_id = temp.genre_id
+
+ORDER BY title ASC;
+
+Задание 8:
+Если в таблицах supply  и book есть одинаковые книги, которые имеют равную цену,  вывести их название и автора, а также посчитать общее количество экземпляров 
+книг в таблицах supply и book,  столбцы назвать Название, Автор  и Количество.
+
+Решение:
+SELECT book.title AS Название, name_author AS Автор, SUM(book.amount + supply.amount) AS Количество
+FROM supply 
+INNER JOIN book USING(price,title)
+INNER JOIN author ON author.name_author = supply.author
+GROUP BY author.name_author, book.title;
