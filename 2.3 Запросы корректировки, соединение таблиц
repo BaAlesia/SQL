@@ -47,6 +47,60 @@ WHERE amount <> 0;
 
 SELECT * FROM book;
 
+Задание 4:
+Занести для книги «Стихотворения и поэмы» Лермонтова жанр «Поэзия», а для книги «Остров сокровищ» Стивенсона - «Приключения». (Использовать два запроса).
 
+Решение:
+UPDATE book
+SET genre_id = 2  
+WHERE book_id = 10;
+UPDATE book
+SET genre_id = 3 
+WHERE book_id = 11;
 
+SELECT * FROM book;
 
+Задание 5:
+Удалить всех авторов и все их книги, общее количество книг которых меньше 20.
+
+Решение:
+DELETE FROM author
+WHERE author_id IN( 
+            SELECT author_id
+            FROM book
+            GROUP BY author_id
+            HAVING SUM(amount) < 20
+            );
+
+SELECT * FROM author;
+SELECT * FROM book;
+
+Задание 6:
+Удалить все жанры, к которым относится меньше 4-х книг. В таблице book для этих жанров установить значение Null.
+
+Решение:
+DELETE FROM genre
+WHERE genre_id IN( 
+            SELECT genre_id
+            FROM book
+            GROUP BY genre_id
+            HAVING COUNT(book_id) < 4
+            );
+
+SELECT * FROM genre;
+SELECT * FROM book;
+
+Задание 7:
+Удалить всех авторов, которые пишут в жанре "Поэзия". Из таблицы book удалить все книги этих авторов. 
+В запросе для отбора авторов использовать полное название жанра, а не его id.
+
+Решение:
+DELETE FROM author
+USING 
+    author 
+    INNER JOIN book ON author.author_id = book.author_id
+    INNER JOIN genre ON genre.genre_id = book.genre_id
+WHERE name_genre = 'Поэзия';
+
+SELECT * FROM author;
+SELECT * FROM book;
