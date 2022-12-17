@@ -10,3 +10,36 @@ FROM
     INNER JOIN book USING(book_id)
 WHERE name_client ='Баранов Павел'
 ORDER BY buy_id, title;
+
+Задание 2:
+Посчитать, сколько раз была заказана каждая книга, для книги вывести ее автора (нужно посчитать, в каком количестве заказов фигурирует каждая книга). 
+Вывести фамилию и инициалы автора, название книги, последний столбец назвать Количество. Результат отсортировать сначала 
+по фамилиям авторов, а потом по названиям книг.
+
+Решение:
+SELECT name_author, title, COUNT(buy_book.amount) AS Количество
+FROM author 
+    INNER JOIN book USING(author_id)
+    LEFT JOIN buy_book USING(book_id)
+GROUP BY book.title, name_author
+ORDER BY 1, 2;
+
+Задание 3:
+Вывести города, в которых живут клиенты, оформлявшие заказы в интернет-магазине. Указать количество заказов в каждый город, этот столбец назвать Количество. 
+Информацию вывести по убыванию количества заказов, а затем в алфавитном порядке по названию городов.
+
+Решение:
+SELECT name_city, COUNT(buy_id) AS Количество
+FROM city
+    INNER JOIN client ON city.city_id = client.city_id
+    INNER JOIN buy ON client.client_id = buy.client_id
+GROUP BY name_city 
+ORDER BY name_city ASC;
+
+Задание 4:
+Вывести номера всех оплаченных заказов и даты, когда они были оплачены.
+
+Решение:
+SELECT buy_id, date_step_end
+FROM buy_step 
+WHERE buy_step.step_id = 1 AND date_step_end IS NOT NULL
