@@ -83,3 +83,43 @@ FROM buy_step
 WHERE step_id=3 AND DATEDIFF(date_step_end, date_step_beg) IS NOT NULL 
 ORDER BY 1;
 
+Задание 8:
+Выбрать всех клиентов, которые заказывали книги Достоевского, информацию вывести в отсортированном по алфавиту виде. 
+В решении используйте фамилию автора, а не его id.
+
+Решение:
+SELECT DISTINCT name_client
+FROM client 
+     JOIN buy USING(client_id)
+     JOIN buy_book USING(buy_id)
+     JOIN book USING(book_id)
+     JOIN author USING(author_id)
+WHERE author.name_author LIKE 'Достоевский Ф.М.'
+ORDER BY name_client;
+
+Задание 9:
+Вывести жанр (или жанры), в котором было заказано больше всего экземпляров книг, указать это количество. Последний столбец назвать Количество.
+
+Решение:
+SELECT name_genre, SUM(buy_book.amount) AS Количество
+FROM genre
+     INNER JOIN book ON genre.genre_id = book.genre_id
+     INNER JOIN buy_book ON book.book_id = buy_book.book_id
+GROUP BY name_genre
+HAVING SUM(buy_book.amount) = (
+    SELECT MAX(sum_amount) AS max_sum_amount
+    FROM
+     ( 
+      SELECT name_genre, SUM(buy_book.amount) AS sum_amount
+      FROM genre
+           INNER JOIN book ON genre.genre_id = book.genre_id
+           INNER JOIN buy_book ON book.book_id = buy_book.book_id
+      GROUP BY name_genre
+     ) AS query_in
+)
+
+
+
+
+
+
