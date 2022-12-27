@@ -138,6 +138,30 @@ WHERE date_step_end is not null and name_step = "Оплата"
 GROUP BY 1,2
 ORDER BY 2,1
 
+Задание 11:
+Для каждой отдельной книги необходимо вывести информацию о количестве проданных экземпляров и их стоимости за 2020 и 2019 год . 
+Вычисляемые столбцы назвать Количество и Сумма. Информацию отсортировать по убыванию стоимости.
+
+Решение:
+SELECT title, SUM(Количество) AS 'Количество', SUM(Сумма) AS 'Сумма'
+FROM
+   (
+    SELECT title,(buy_book.amount) AS 'Количество',(book.price*buy_book.amount) AS 'Сумма'
+    FROM
+        book
+        INNER JOIN buy_book USING(book_id)
+        INNER JOIN buy_step USING(buy_id)
+        WHERE date_step_end IS NOT Null AND step_id=1
+
+    UNION ALL
+
+    SELECT title,(buy_archive.amount) AS 'Количество',(buy_archive.amount*buy_archive.price) AS 'Сумма'
+    FROM
+        book
+        INNER JOIN buy_archive USING(book_id)
+    ) AS query_in
+GROUP BY  title
+ORDER BY Сумма DESC
 
 
 
