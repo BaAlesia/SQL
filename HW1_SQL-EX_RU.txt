@@ -1,0 +1,69 @@
+Задание: 1 (Serge I: 2002-09-30)
+Найдите номер модели, скорость и размер жесткого диска для всех ПК стоимостью менее 500 дол. Вывести: model, speed и hd
+
+SELECT model, speed, hd FROM PC
+WHERE price < 500
+
+Задание: 2 (Serge I: 2002-09-21)
+Найдите производителей принтеров. Вывести: maker
+
+SELECT maker FROM Product
+WHERE type = 'Printer'
+GROUP BY maker
+
+Задание: 3 (Serge I: 2002-09-30)
+Найдите номер модели, объем памяти и размеры экранов ПК-блокнотов, цена которых превышает 1000 дол.
+
+SELECT model, ram, screen FROM laptop 
+WHERE price > 1000
+
+Задание: 4 (Serge I: 2002-09-21)
+Найдите все записи таблицы Printer для цветных принтеров.
+
+SELECT * FROM printer
+WHERE  color = 'y'
+
+Задание: 5 (Serge I: 2002-09-30)
+Найдите номер модели, скорость и размер жесткого диска ПК, имеющих 12x или 24x CD и цену менее 600 дол.
+
+SELECT model, speed, hd FROM PC
+WHERE (cd = '12x' OR cd = '24x') AND price < 600
+
+Задание: 6 (Serge I: 2002-10-28)
+Для каждого производителя, выпускающего ПК-блокноты c объёмом жесткого диска не менее 10 Гбайт, 
+найти скорости таких ПК-блокнотов. Вывод: производитель, скорость.
+
+SELECT DISTINCT p.maker AS maker, l.speed AS speed FROM laptop
+     l join product p ON l.model = p.model WHERE l.hd >= 10
+
+Задание: 7 (Serge I: 2002-11-02)
+Найдите номера моделей и цены всех имеющихся в продаже продуктов (любого типа) производителя B (латинская буква).
+
+SELECT DISTINCT p.model, pc.price FROM product
+	p JOIN pc ON p.model = pc.model
+	WHERE maker = 'B' 
+	UNION SELECT DISTINCT p.model, l.price FROM product p JOIN laptop l ON p.model = l.model 
+	WHERE maker = 'B' 
+		UNION SELECT DISTINCT p.model, pr.price FROM product 
+		p JOIN printer pr ON p.model = pr.model 
+		WHERE maker = 'B'
+
+Задание: 8 (Serge I: 2003-02-03)
+Найдите производителя, выпускающего ПК, но не ПК-блокноты.
+
+SELECT maker FROM product
+WHERE type = 'pc' except SELECT maker FROM product WHERE type = 'laptop'
+
+Задание: 9 (Serge I: 2002-11-02)
+Найдите производителей ПК с процессором не менее 450 Мгц. Вывести: Maker
+
+SELECT DISTINCT p.maker FROM product 
+	p join pc
+	pc on p.model = pc.model
+WHERE pc.speed >= '450'
+
+Задание: 10 (Serge I: 2002-09-23)
+Найдите модели принтеров, имеющих самую высокую цену. Вывести: model, price
+
+SELECT DISTINCT model, price FROM printer
+WHERE price = (SELECT MAX(price) FROM printer)
