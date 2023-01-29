@@ -8,3 +8,13 @@ FROM city
 WHERE name_city = "Москва";
 
 SELECT * FROM client;
+
+Задание 2:
+Создать новый заказ для Попова Ильи. Его комментарий для заказа: «Связаться со мной по вопросу доставки».
+
+Решение:
+INSERT INTO buy 
+SET buy_description = 'Связаться со мной по вопросу доставки', client_id = (SELECT client_id FROM client
+WHERE name_client = 'Попов Илья') ;
+
+SELECT * FROM buy;
