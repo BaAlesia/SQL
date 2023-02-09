@@ -40,6 +40,47 @@ WHERE author.name_author = 'Булгаков М.А.' AND book.title='Белая 
 UPDATE book, buy_book
 SET book.amount = book.amount - buy_book.amount
 WHERE buy_book.buy_id = 5 AND book.book_id = buy_book.book_id; 
-
 SELECT * FROM book;
+
+Задание 5:
+Создать счет (таблицу buy_pay) на оплату заказа с номером 5, в который включить название книг, их автора, цену, количество заказанных книг и  
+стоимость. Последний столбец назвать Стоимость. Информацию в таблицу занести в отсортированном по названиям книг виде.
+
+Решение:
+CREATE TABLE buy_pay AS
+SELECT title, name_author, price, buy_book.amount, book.price*buy_book.amount AS Стоимость
+FROM buy_book
+JOIN book ON book.book_id=buy_book.book_id
+JOIN author ON author.author_id=book.author_id
+WHERE buy_book.buy_id=5
+ORDER BY book.title;
+SELECT * FROM buy_pay;
+
+Задание 6:
+Создать общий счет (таблицу buy_pay) на оплату заказа с номером 5. Куда включить номер заказа, количество книг в 
+заказе (название столбца Количество) и его общую стоимость (название столбца Итого). Для решения используйте ОДИН запрос.
+
+Решение:
+CREATE TABLE buy_pay
+SELECT buy_book.buy_id, SUM(buy_book.amount) as Количество, SUM(book.price*buy_book.amount)  as Итого
+FROM buy_book
+JOIN book USING(book_id)
+WHERE buy_id=5
+GROUP BY 1;
+SELECT*FROM buy_pay;
+
+Задание 7:
+В таблицу buy_step для заказа с номером 5 включить все этапы из таблицы step, которые должен пройти этот заказ. 
+В столбцы date_step_beg и date_step_end всех записей занести Null.
+
+Решение:
+INSERT INTO buy_step (buy_id, step_id)
+SELECT buy_id, step_id
+FROM step CROSS JOIN buy     
+WHERE buy_id = 5;
+
+SELECT * FROM buy_step;
+
+
+
 
