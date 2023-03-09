@@ -34,3 +34,40 @@ FROM student
 WHERE result = (SELECT MAX(result) 
          FROM attempt)
 ORDER BY name_student;
+
+Задание 4:
+Если студент совершал несколько попыток по одной и той же дисциплине, то вывести разницу в днях между первой и последней попыткой. 
+В результат включить фамилию и имя студента, название дисциплины и вычисляемый столбец Интервал. Информацию вывести по возрастанию разницы. 
+Студентов, сделавших одну попытку по дисциплине, не учитывать. 
+
+Решение:
+SELECT name_student, name_subject, DATEDIFF(MAX(date_attempt), MIN(date_attempt)) AS Интервал
+FROM attempt
+    INNER JOIN student USING(student_id)
+    INNER JOIN subject USING(subject_id)
+    GROUP BY name_student, name_subject
+HAVING COUNT(subject_id) > 1
+ORDER BY Интервал ASC;
+
+Задание 5:
+Студенты могут тестироваться по одной или нескольким дисциплинам (не обязательно по всем). Вывести дисциплину и количество уникальных 
+студентов (столбец назвать Количество), которые по ней проходили тестирование . Информацию отсортировать сначала по убыванию количества, 
+а потом по названию дисциплины. В результат включить и дисциплины, тестирование по которым студенты еще не проходили, в этом случае указать количество студентов 0.
+
+Решение:
+SELECT name_subject, COUNT(DISTINCT student_id) AS Количество
+FROM subject
+    LEFT JOIN attempt USING(subject_id)
+    GROUP BY name_subject
+ORDER BY Количество DESC, name_subject;
+
+Задание 6:
+Случайным образом отберите 3 вопроса по дисциплине «Основы баз данных». В результат включите столбцы question_id и name_question.
+
+Решение:
+SELECT question_id, name_question
+FROM subject INNER JOIN question USING(subject_id)
+WHERE subject.subject_id = 2
+ORDER BY RAND()
+LIMIT 3;
+
